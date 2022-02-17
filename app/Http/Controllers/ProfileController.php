@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileRequest;
 use App\Http\Requests\PasswordRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
@@ -15,7 +16,9 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        return view('profile.edit');
+        $listRef = DB::table('users')->where('coderef', auth()->user()->cedula)->get();
+        // return view('profile.edit');
+        return view('profile.edit')->with('datos', $listRef);
     }
 
     /**
@@ -32,7 +35,7 @@ class ProfileController extends Controller
 
         auth()->user()->update($request->all());
 
-        return back()->withStatus(__('Profile successfully updated.'));
+        return back()->withStatus(__('Perfil actualizado con éxito.'));
     }
 
     /**
@@ -49,6 +52,6 @@ class ProfileController extends Controller
 
         auth()->user()->update(['password' => Hash::make($request->get('password'))]);
 
-        return back()->withPasswordStatus(__('Password successfully updated.'));
+        return back()->withPasswordStatus(__('Contraseña actualizada con éxito.'));
     }
 }
